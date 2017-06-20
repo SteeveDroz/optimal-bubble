@@ -93,19 +93,22 @@ public class Bubble extends Element {
 
     @Override
     public void prepare() {
+	double[] location = { x, y };
 	double[] newLocation = { x, y };
 	for (Bubble neighbor : neighbors) {
-	    double[] attraction = DoubleUtil.getDirectedLength(new double[] { x, y },
-		    new double[] { neighbor.x, neighbor.y }, speed);
-	    newLocation[0] += attraction[0];
-	    newLocation[1] += attraction[1];
+	    newLocation[0] += neighbor.x;
+	    newLocation[1] += neighbor.y;
 
-	    if (neighbor != this
-		    && DoubleUtil.distance(new double[] { x, y }, new double[] { neighbor.x, neighbor.y }) < 1) {
+	    if (neighbor != this && DoubleUtil.distance(location, new double[] { neighbor.x, neighbor.y }) < 1) {
 		collapsed.add(neighbor);
 	    }
 	}
-	System.out.println("Distance: " + DoubleUtil.distance(new double[] { x, y }, newLocation));
+	System.out.println("Distance: " + DoubleUtil.distance(location, newLocation));
+	if (DoubleUtil.distance(location, newLocation) > speed) {
+	    double[] delta = DoubleUtil.getDirectedLength(location, newLocation, speed);
+	    newLocation[0] = location[0] + delta[0];
+	    newLocation[1] = location[1] + delta[1];
+	}
 	this.nextX = newLocation[0];
 	this.nextY = newLocation[1];
     }
